@@ -1,0 +1,98 @@
+#######################################################################################################################################################################################################
+# These coverpoints belongs to the test plan for RISC-V Privilege Arch Compliance developed by 10xEngineers
+#######################################################################################################################################################################################################
+     
+misa:
+  config: 
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*F.*D.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	((misa >> 3) & 0x01) == 0 && ((misa >> 5) & 0x01) == 0 : 0		# setting “F”=0 and “D”=1 should results in both “F” and “D” being cleared.
+  val_comb:
+	((rs1val >> 3) & 0x01) == 0x01 && (imm_val == 0x301): 0		# checks if the D field of rs1val is set to 1 and if imm_val is equal to 0x301. If these conditions are both true, the coverpoint will have a value of 0.	
+
+
+misa:
+  config: 
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*F.*D.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 2, 1) = True;
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	((misa >> 3) & 0x01) == 0 && ((misa >> 5) & 0x01) == 0 : 0		# setting “F”=0 and “D”=1 should results in both “F” and “D” being cleared.
+  val_comb:
+	((rs1val >> 3) & 0x01) == 0x01 && (imm_val == 0x301): 0		# checks if the D field of rs1val is set to 1 and if imm_val is equal to 0x301. If these conditions are both true, the coverpoint will have a value of 0.	
+	
+
+misa_mxl_check_32:
+  config: 
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	misa >> (xlen-2) == 0x01 : 0				# checks whether the mxl field of misa register is 1.
+    
+    
+misa_mxl_check_64:
+  config: 
+    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 2, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	misa >> (xlen-2) == 0x02 : 0				# checks whether the mxl field of misa register is 2.
+    
+    
+misa_mxl_check_128:
+  config: 
+    - check ISA:=regex(.*128.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 3, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	misa >> (xlen-2) == 0x03 : 0				# checks whether the mxl field of misa register is 3.
+	
+	
+misa_Umode:
+  config: 
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(misa >> 20) & 0x01 == 0x01 : 0 			# checking if U bit gets set if there is support for user mode RV32
+	
+
+misa_Umode:
+  config: 
+    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(misa >> 20) & 0x01 == 0x01 : 0 			# checking if U bit gets set if there is support for user mode RV64
+	
+	
+misa_Smode:
+  config: 
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(misa >> 18) & 0x01 == 0x01 : 0 			# checking if S bit gets set if there is support for supervisor mode RV32
+	
+
+misa_Smode:
+  config: 
+    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(misa >> 18) & 0x01 == 0x01 : 0 			# checking if S bit gets set if there is support for supervisor mode RV64
+	
+
