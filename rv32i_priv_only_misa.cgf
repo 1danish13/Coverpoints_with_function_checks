@@ -28,7 +28,7 @@ misa:
 
 misa_mxl_check_32:
   config: 
-    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -38,7 +38,7 @@ misa_mxl_check_32:
     
 misa_mxl_check_64:
   config: 
-    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 2, 1) = True;
+    - check ISA:=regex(.*RV64.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 2, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -48,7 +48,7 @@ misa_mxl_check_64:
     
 misa_mxl_check_128:
   config: 
-    - check ISA:=regex(.*128.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 3, 1) = True;
+    - check ISA:=regex(.*RV128.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 3, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -58,7 +58,7 @@ misa_mxl_check_128:
 	
 misa_Umode:
   config: 
-    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -68,7 +68,7 @@ misa_Umode:
 
 misa_Umode:
   config: 
-    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*RV64.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -78,7 +78,7 @@ misa_Umode:
 	
 misa_Smode:
   config: 
-    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -88,7 +88,7 @@ misa_Smode:
 
 misa_Smode:
   config: 
-    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*RV64.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
