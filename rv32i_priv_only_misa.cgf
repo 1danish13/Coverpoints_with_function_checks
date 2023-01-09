@@ -58,41 +58,22 @@ misa_mxl_check_128:
 	
 misa_Umode:
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
   csr_comb:
 	(misa >> 20) & 0x01 == 0x01 : 0 			# checking if U bit gets set if there is support for user mode RV32
 	
-
-misa_Umode:
-  config: 
-    - check ISA:=regex(.*RV64.*); check ISA:=regex(.*I.*Zicsr.*U.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
-  mnemonics: 
-    csrrw: 0
-    csrrs: 0
-  csr_comb:
-	(misa >> 20) & 0x01 == 0x01 : 0 			# checking if U bit gets set if there is support for user mode RV64
-	
 	
 misa_Smode:
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
+    - check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
   csr_comb:
 	(misa >> 18) & 0x01 == 0x01 : 0 			# checking if S bit gets set if there is support for supervisor mode RV32
-	
 
-misa_Smode:
-  config: 
-    - check ISA:=regex(.*RV64.*); check ISA:=regex(.*I.*Zicsr.*S.*); check is_implemented(misa) = True; check is_legal_warl(misa, xlen-2, 1, 1) = True;
-  mnemonics: 
-    csrrw: 0
-    csrrs: 0
-  csr_comb:
-	(misa >> 18) & 0x01 == 0x01 : 0 			# checking if S bit gets set if there is support for supervisor mode RV64
 	
 
