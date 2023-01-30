@@ -1,15 +1,15 @@
 #######################################################################################################################################################################################################
-# These coverpoints belongs to the test plan for RISC-V Privilege Arch Compliance developed by 10xEngineers
+# These coverpoints belongs to the test plan for RISC-V Privilege Arch Compliance developed by 10xEngineers & Incore Semiconductors
 #######################################################################################################################################################################################################
      
 misa:
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*F.*D.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, 3, 5) = True;
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*F.*D.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, 0x28, 0x28) = True;
   mnemonics:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(write_val("misa") & 0x20 == 0) & (old_val("misa") & 0x28 == 0x28) & (misa & 0x28) == 0
+	((write_val("misa") & 0x20) == 0) && (old_val("misa") & 0x28) == 0x28 && (misa & 0x28) == 0
 
 
 misa_mxl_check_32:
@@ -19,7 +19,7 @@ misa_mxl_check_32:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	misa >> (xlen-2) == 0x01 : 0				# checks whether the mxl field of misa register is 1.
+	misa >> (xlen-2) == 0x01 : 0								# checks whether the mxl field of misa register is 1.
     
     
 misa_mxl_check_64:
@@ -29,7 +29,7 @@ misa_mxl_check_64:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	misa >> (xlen-2) == 0x02 : 0				# checks whether the mxl field of misa register is 2.
+	misa >> (xlen-2) == 0x02 : 0								# checks whether the mxl field of misa register is 2.
     
     
 misa_mxl_check_128:
@@ -39,8 +39,8 @@ misa_mxl_check_128:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	misa >> (xlen-2) == 0x03 : 0				# checks whether the mxl field of misa register is 3.
-	
+	misa >> (xlen-2) == 0x03 : 0								# checks whether the mxl field of misa register is 3.
+		
 	
 misa_Umode:
   config: 
@@ -49,7 +49,7 @@ misa_Umode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(misa >> 20) & 0x01 == 0x01 : 0 			# checking if U bit gets set if there is support for user mode RV32
+	(misa >> 20) & 0x01 == 0x01 : 0 							# checking if U bit gets set if there is support for user mode RV32
 	
 	
 misa_Smode:
@@ -59,7 +59,7 @@ misa_Smode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(misa >> 18) & 0x01 == 0x01 : 0 			# checking if S bit gets set if there is support for supervisor mode RV32
+	(misa >> 18) & 0x01 == 0x01 : 0 							# checking if S bit gets set if there is support for supervisor mode RV32
 	
 #######################################################################################################################################################################################################
 
@@ -71,9 +71,8 @@ mcause:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(mcause >> 31) & 1 == 1 : 0				# checks if the exception or interrupt was an interrupt 
-	(mcause >> 31) & 1 == 0 : 0				# checks if the exception or interrupt was an exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h00 : 0				# Instruction address misaligned exception
+	(mcause >> 31) & 1 == 1 : 0								# checks if the exception or interrupt was an interrupt 
+	(mcause >> 31) & 1 == 0 : 0								# checks if the exception or interrupt was an exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h01 : 0				# Instruction access fault exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h02 : 0				# Illegal instruction exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h03 : 0				# Breakpoint exception
@@ -81,15 +80,52 @@ mcause:
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h05 : 0				# Load access fault exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h06 : 0				# Store/AMO address misaligned exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h07 : 0				# Store/AMO access fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h08 : 0				# Environment call from U-mode exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0b : 0				# Environment call from M-mode exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0c : 0				# Instruction page fault exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0d : 0				# Load page fault exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0f : 0				# Store/AMO page fault exception
 	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h03 : 0				# Machine software interrupt
 	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h07 : 0				# Machine timer interrupt
 	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h0b : 0				# Machine external interrupt
 	
+
+mcause_PageFault:    
+  config: 
+    - check ISA:=regex(.*RV32.*); regex(.*I.*Zicsr.*S.*); 
+    - check regex(.*I.*Zicsr.*U.*); 
+    - check is_implemented_software(mcause) = True;
+    - check satp.mode != "bare";								# checks if the satp.mode field, which determines the paging scheme, is implemented in software
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 0x0c : 0				# Instruction page fault exception
+	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 0x0d : 0				# Load page fault exception
+	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 0x0f : 0				# Store/AMO page fault exception
+	
+	
+mcause_PageFault_satp_bare:    
+  config: 
+    - check ISA:=regex(.*RV32.*); regex(.*I.*Zicsr.*S.*); 
+    - check regex(.*I.*Zicsr.*U.*); 
+    - check is_implemented_software(mcause) = True;
+    - check satp.mode = "bare";
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mcause & 0xff) == 0 : 0								# No page fault in bare mode
+
+
+mcause_InstAddr_MissAligned:    
+  config: 
+    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*C.*Zicsr.*); check is_trap_2_M(mcause) = True;
+    - check is_implemented_software(mcause) = True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h00 : 0				# Instruction address misaligned exception, If C extension is present and enabled, the exception of instruction address misaligned cannot occur.
+
 
 mcause_Smode:    
   config: 
@@ -103,6 +139,7 @@ mcause_Smode:
 	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h05 : 0				# Supervisor timer interrupt
 	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h09 : 0				# Supervisor external interrupt
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h09 : 0				# Environment call from S-mode exception
+
 	
 mcause_Umode:    
   config: 
@@ -113,6 +150,108 @@ mcause_Umode:
     csrrs: 0
   csr_comb:
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h08 : 0				# Environment call from U-mode exception
-
 	
+	
+#######################################################################################################################################################################################################
+
+mstatus:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*); 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatus >> 3) & 0x01 == 0x01 : 0 							# checking if the MIE gets enabled
+    	(mstatus >> 7) & 0x01 == 0x01 : 0 							# MPIE holds the value of the interrupt-enable bit active prior to the trap, checking whether it does that or not
+  	(mstatus >> 10) & 0x3 == 0x3 : 0							# MPP fields to check if privilege mode is M
+    	(mstatus >> 17) & 0x1 == 0x01 : 0 							# checking MPRV, When MPRV=1, load and store memory addresses are translated and protected, and endianness is applied
+    	(mstatus >> 19) & 0x1 == 0x01 : 0 							# check when MXR evaluates to 1    
+    	(mstatus >> 20) & 0x1 == 0x01 : 0 							# check when TVM evaluates to 1 
+    	(mstatus >> 21) & 0x1 == 0x01 : 0 							# check when TW evaluates to 1 
+
+
+mstatus_Smode:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*);
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatus >> 1) & 0x01 == 0x01 : 0							# Check that the SIE bit is set to 1 when the processor is in supervisor mode
+	(mstatus >> 5) & 0x01 == 0x01 : 0 							# Check that the SPIE bit is set to 1 when interrupts are enabled in supervisor mode and that it is set to 0 when interrupts are disabled in supervisor mode 
+	(mstatus >> 8) & 0x01 == 0x01 : 0 							# checks SPP bit
+	(mstatus >> 22) & 0x1 == 0x01 : 0 							# When TSR=1, attempts to execute SRET while executing in S-mode will raise an illegal instruction exception.  
+	(mstatus >> 10) & 0x3 == 0x01 : 0							# MPP fields to check if privilege mode is S
+ 
+ 
+mstatus_Umode:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*);
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatus >> 10) & 0x3 == 0x02 : 0 							# checks whether machine-mode previous privilege mode is set to user mode.
+	(mstatus >> 18) & 0x1 == 0x01 : 0 							# checks when SUM=1, accesses to pages that are accessible by U-mode are permitted.
+	
+	
+mstatush:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*);
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatush >> 5) & 0x1 == 0x01 : 0							# checks if machine-mode byte enable (MBE) is set to enabled. If this bit is set to 1, the coverpoint will evaluate to 0, indicating that MBE is enabled
+	
+
+mstatus_little-endian:    
+  config: 
+    - check ISA:=regex(.*64.*); regex(.*I.*Zicsr.*);
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatush >> 5) & (mstatus >> 4) & (mstatus >> 6) == 0 : 0 				# checks if all three of these bits are set to 0, indicating that MBE, SBE, and UBE are all disabled. When these bits are all disabled, the processor is in little-endian mode, and accesses made to memory will be little-endian.
+
+
+mstatus_big_endian:    
+  config: 
+    - check ISA:=regex(.*64.*); regex(.*I.*Zicsr.*S.*); check big_endian_support=True; 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatus >> 37) & 0x1 == 0x01 : 0 							# checks the sixth least significant bit of the upper 32 bits of the mstatus register to ensure that machine-mode byte enable (MBE) is set to enabled. If this bit is set to 1, the coverpoint will evaluate to 0, indicating that MBE is enabled 
+
+
+mstatus_big_endian_Smode:    
+  config: 
+    - check ISA:=regex(.*64.*); regex(.*I.*Zicsr.*S.*); check big_endian_support=True; 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatush >> 4) & 0x1 == 0x01 : 0 							# ensures that certain instructions or operations are only executed when the processor is in supervisor mode and in big-endian mode						   
+	
+	
+mstatus_big_endian__Umode:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*); check big_endian_support=True;
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mstatus >> 6) & 0x1 == 0x01 : 0 							# check UBE = 1, it controls whether explicit load and store memory accesses made from U-mode is big-endian
+	
+	
+mstatus_checking_SD:    
+  config: 
+    - check ISA:=regex(.*I.*Zicsr.*); 
+  csr_comb: 
+    	mstatus >> (xlen-1) == 1 : 0 								# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
+    	mstatus >> (xlen-1) == 0 : 0 								# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
+
+
+
 
