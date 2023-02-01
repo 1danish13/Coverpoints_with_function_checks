@@ -1,10 +1,10 @@
 #######################################################################################################################################################################################################
-# These coverpoints belongs to the test plan for RISC-V Privilege Arch Compliance developed by 10xEngineers & Incore Semiconductors
+# These coverpoints belongs to the test plan for RISC-V Privilege Arch Compliance developed by 10xEngineers
 #######################################################################################################################################################################################################
      
 misa:
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*F.*D.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, 0x28, 0x28) = True;
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*F.*D.*Zicsr.*); check is_implemented(misa) = True; check is_legal_warl(misa, 0x28, 0x28) = True;
   mnemonics:
     csrrw: 0
     csrrs: 0
@@ -14,7 +14,7 @@ misa:
 
 misa_mxl_check_32:
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True;
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -24,7 +24,7 @@ misa_mxl_check_32:
     
 misa_mxl_check_64:
   config: 
-    - check ISA:=regex(.*RV64.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True;
+    - check ISA:=regex(.*64.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -34,7 +34,7 @@ misa_mxl_check_64:
     
 misa_mxl_check_128:
   config: 
-    - check ISA:=regex(.*RV128.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True;
+    - check ISA:=regex(.*128.*); check ISA:=regex(.*I.*Zicsr.*); check is_implemented(misa) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -65,14 +65,14 @@ misa_Smode:
 
 mcause:    
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*Zicsr.*); check is_trap_2_M(mcause) = True;
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check is_trap_2_M(mcause) = True;
     - check is_implemented_software(mcause) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(mcause >> 31) & 1 == 1 : 0								# checks if the exception or interrupt was an interrupt 
-	(mcause >> 31) & 1 == 0 : 0								# checks if the exception or interrupt was an exception
+	(mcause >> 31) & 1 == 1 : 0							# checks if the exception or interrupt was an interrupt 
+	(mcause >> 31) & 1 == 0 : 0							# checks if the exception or interrupt was an exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h01 : 0				# Instruction access fault exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h02 : 0				# Illegal instruction exception
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h03 : 0				# Breakpoint exception
@@ -90,10 +90,8 @@ mcause:
 
 mcause_PageFault:    
   config: 
-    - check ISA:=regex(.*RV32.*); regex(.*I.*Zicsr.*S.*); 
-    - check regex(.*I.*Zicsr.*U.*); 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*U.*); check satp.mode != "bare";	# checks if the satp.mode field, which determines the paging scheme, is implemented in software
     - check is_implemented_software(mcause) = True;
-    - check satp.mode != "bare";								# checks if the satp.mode field, which determines the paging scheme, is implemented in software
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -105,10 +103,8 @@ mcause_PageFault:
 	
 mcause_PageFault_satp_bare:    
   config: 
-    - check ISA:=regex(.*RV32.*); regex(.*I.*Zicsr.*S.*); 
-    - check regex(.*I.*Zicsr.*U.*); 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*U.*); check satp.mode = "bare"; 
     - check is_implemented_software(mcause) = True;
-    - check satp.mode = "bare";
   mnemonics: 
     csrrw: 0
     csrrs: 0
@@ -118,18 +114,19 @@ mcause_PageFault_satp_bare:
 
 mcause_InstAddr_MissAligned:    
   config: 
-    - check ISA:=regex(.*RV32.*); check ISA:=regex(.*I.*C.*Zicsr.*); check is_trap_2_M(mcause) = True;
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*C.*Zicsr.*);
     - check is_implemented_software(mcause) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
   csr_comb:
+  	if (is_trap_2_M(mcause) == True)							
 	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h00 : 0				# Instruction address misaligned exception, If C extension is present and enabled, the exception of instruction address misaligned cannot occur.
 
 
 mcause_Smode:    
   config: 
-    - check ISA:=regex(.*RV32.*); regex(.*I.*Zicsr.*S.*); 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*); 
     - check is_implemented_software(mcause) = True;
   mnemonics: 
     csrrw: 0
@@ -143,7 +140,7 @@ mcause_Smode:
 	
 mcause_Umode:    
   config: 
-    - check ISA:=regex(.*RV32.*); regex(.*I.*Zicsr.*U.*); 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*); 
     - check is_implemented_software(mcause) = True;
   mnemonics: 
     csrrw: 0
@@ -165,9 +162,7 @@ mstatus:
     	(mstatus >> 7) & 0x01 == 0x01 : 0 							# MPIE holds the value of the interrupt-enable bit active prior to the trap, checking whether it does that or not
   	(mstatus >> 10) & 0x3 == 0x3 : 0							# MPP fields to check if privilege mode is M
     	(mstatus >> 17) & 0x1 == 0x01 : 0 							# checking MPRV, When MPRV=1, load and store memory addresses are translated and protected, and endianness is applied
-    	(mstatus >> 19) & 0x1 == 0x01 : 0 							# check when MXR evaluates to 1    
-    	(mstatus >> 20) & 0x1 == 0x01 : 0 							# check when TVM evaluates to 1 
-    	(mstatus >> 21) & 0x1 == 0x01 : 0 							# check when TW evaluates to 1 
+    	(mstatus >> 21) & 0x1 == 0x00 : 0							# TW is set to 0 when there are no privilege levels below M.
 
 
 mstatus_Smode:    
@@ -182,7 +177,14 @@ mstatus_Smode:
 	(mstatus >> 8) & 0x01 == 0x01 : 0 							# checks SPP bit
 	(mstatus >> 22) & 0x1 == 0x01 : 0 							# When TSR=1, attempts to execute SRET while executing in S-mode will raise an illegal instruction exception.  
 	(mstatus >> 10) & 0x3 == 0x01 : 0							# MPP fields to check if privilege mode is S
- 
+    	(mstatus >> 20) & 0x1 == 0x01 : 0 							# TVM=1, illegal instruction exception in S-mode
+    	(mstatus >> 20) & 0x1 == 0x00 : 0 							# TVM=0, permitted in S-mode
+    	(mstatus >> 21) & 0x1 == 0x01 : 0 							# When TW=1 and WFI is executed in a lower-privileged mode, it causes an illegal instruction exception if not completed within a bounded time limit, which may be 0
+    	(mstatus >> 19) & 0x1 == 0x01 : 0 							# When MXR is set to 1, memory pages that are either marked as readable (R=1) or executable (X=1) can be loaded successfully.
+    	(mstatus >> 19) & 0x1 == 0x00 : 0							# When MXR is set to 0, only loading data from pages that are marked as readable (with R=1) will be successful.
+    	(mstatus >> 18) & 0x1 == 0x00 : 0							# SUM=0, S-mode memory accesses to pages accessible by U-mode will fault
+    	(mstatus >> 18) & 0x1 == 0x01 : 0							# SUM=1, these accesses to pages accessible by U-mode are permitted
+ 	
  
 mstatus_Umode:    
   config: 
@@ -192,7 +194,6 @@ mstatus_Umode:
     csrrs: 0
   csr_comb:
 	(mstatus >> 10) & 0x3 == 0x02 : 0 							# checks whether machine-mode previous privilege mode is set to user mode.
-	(mstatus >> 18) & 0x1 == 0x01 : 0 							# checks when SUM=1, accesses to pages that are accessible by U-mode are permitted.
 	
 	
 mstatush:    
@@ -247,11 +248,9 @@ mstatus_big_endian__Umode:
 	
 mstatus_checking_SD:    
   config: 
-    - check ISA:=regex(.*I.*Zicsr.*); 
+    - check ISA:=regex(.*I.*Zicsr.*F.*V.*); 
   csr_comb: 
     	mstatus >> (xlen-1) == 1 : 0 								# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
     	mstatus >> (xlen-1) == 0 : 0 								# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
-
-
-
+    	
 
