@@ -65,45 +65,40 @@ misa_Smode:
 
 mcause:    
   config: 
-    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check is_trap_2_M(mcause) = True;
+    - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); 
     - check is_implemented_software(mcause) = True;
   mnemonics: 
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(mcause >> 31) & 1 == 1 : 0							# checks if the exception or interrupt was an interrupt 
-	(mcause >> 31) & 1 == 0 : 0							# checks if the exception or interrupt was an exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h01 : 0				# Instruction access fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h02 : 0				# Illegal instruction exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h03 : 0				# Breakpoint exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h04 : 0				# Load address misaligned exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h05 : 0				# Load access fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h06 : 0				# Store/AMO address misaligned exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h07 : 0				# Store/AMO access fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0b : 0				# Environment call from M-mode exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0d : 0				# Load page fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0f : 0				# Store/AMO page fault exception
-	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h03 : 0				# Machine software interrupt
-	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h07 : 0				# Machine timer interrupt
-	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h0b : 0				# Machine external interrupt
+	is_trap == True and (mcause >> 31) & 1 == 1 : 0							# checks if the exception or interrupt was an interrupt 
+	is_trap == True and (mcause >> 31) & 1 == 0 : 0							# checks if the exception or interrupt was an exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h01 : 0				# Instruction access fault exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h02 : 0				# Illegal instruction exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h03 : 0				# Breakpoint exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h04 : 0				# Load address misaligned exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h05 : 0				# Load access fault exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h06 : 0				# Store/AMO address misaligned exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h07 : 0				# Store/AMO access fault exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0b : 0				# Environment call from M-mode exception
+	is_trap == True and (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h03 : 0				# Machine software interrupt
+	is_trap == True and (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h07 : 0				# Machine timer interrupt
+	is_trap == True and (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h0b : 0				# Machine external interrupt
 	
-
-mcause_PageFault:    
-  config: 
+	
+mcause_PageFault:
+  config:
     - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*U.*); check satp.mode != "bare";	# checks if the satp.mode field, which determines the paging scheme, is implemented in software
-    - check is_implemented_software(mcause) = True;
-  mnemonics: 
+  mnemonics:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 0x0c : 0				# Instruction page fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 0x0d : 0				# Load page fault exception
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 0x0f : 0				# Store/AMO page fault exception
+    (mcause & 0xff) == 0x0c || (mcause & 0xff) == 0x0d || (mcause & 0xff) == 0x0f) && is_trap == False : 0
 	
 	
 mcause_PageFault_satp_bare:    
   config: 
-    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*U.*); check satp.mode = "bare"; 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*U.*); check satp.mode == "bare"; 
     - check is_implemented_software(mcause) = True;
   mnemonics: 
     csrrw: 0
@@ -119,9 +114,8 @@ mcause_InstAddr_MissAligned:
   mnemonics: 
     csrrw: 0
     csrrs: 0
-  csr_comb:
-  	if (is_trap_2_M(mcause) == True)							
-	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h00 : 0				# Instruction address misaligned exception, If C extension is present and enabled, the exception of instruction address misaligned cannot occur.
+  csr_comb:							
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h00		# Instruction address misaligned exception, If C extension is present and enabled, the exception of instruction address misaligned cannot occur.
 
 
 mcause_Smode:    
@@ -160,8 +154,6 @@ mstatus:
   csr_comb:
 	(mstatus >> 3) & 0x01 == 0x01 : 0 							# checking if the MIE gets enabled
     	(mstatus >> 7) & 0x01 == 0x01 : 0 							# MPIE holds the value of the interrupt-enable bit active prior to the trap, checking whether it does that or not
-  	(mstatus >> 10) & 0x3 == 0x3 : 0							# MPP fields to check if privilege mode is M
-    	(mstatus >> 17) & 0x1 == 0x01 : 0 							# checking MPRV, When MPRV=1, load and store memory addresses are translated and protected, and endianness is applied
     	(mstatus >> 21) & 0x1 == 0x00 : 0							# TW is set to 0 when there are no privilege levels below M.
 
 
@@ -176,7 +168,6 @@ mstatus_Smode:
 	(mstatus >> 5) & 0x01 == 0x01 : 0 							# Check that the SPIE bit is set to 1 when interrupts are enabled in supervisor mode and that it is set to 0 when interrupts are disabled in supervisor mode 
 	(mstatus >> 8) & 0x01 == 0x01 : 0 							# checks SPP bit
 	(mstatus >> 22) & 0x1 == 0x01 : 0 							# When TSR=1, attempts to execute SRET while executing in S-mode will raise an illegal instruction exception.  
-	(mstatus >> 10) & 0x3 == 0x01 : 0							# MPP fields to check if privilege mode is S
     	(mstatus >> 20) & 0x1 == 0x01 : 0 							# TVM=1, illegal instruction exception in S-mode
     	(mstatus >> 20) & 0x1 == 0x00 : 0 							# TVM=0, permitted in S-mode
     	(mstatus >> 21) & 0x1 == 0x01 : 0 							# When TW=1 and WFI is executed in a lower-privileged mode, it causes an illegal instruction exception if not completed within a bounded time limit, which may be 0
@@ -185,16 +176,87 @@ mstatus_Smode:
     	(mstatus >> 18) & 0x1 == 0x00 : 0							# SUM=0, S-mode memory accesses to pages accessible by U-mode will fault
     	(mstatus >> 18) & 0x1 == 0x01 : 0							# SUM=1, these accesses to pages accessible by U-mode are permitted
  	
- 
-mstatus_Umode:    
-  config: 
-    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*);
-  mnemonics: 
+
+mstatus_MPRV:
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*); check satp.mode != "bare"; 		# checks if the satp.mode field, which determines the paging scheme, is implemented in software and if there is additional privilege levels, except M.
+    - check is_implemented_software(mstatus) = True; 					# checks if MPRV is present only if translation is allowed i.e S mode is present
+  mnemonics:
     csrrw: 0
     csrrs: 0
   csr_comb:
-	(mstatus >> 10) & 0x3 == 0x02 : 0 							# checks whether machine-mode previous privilege mode is set to user mode.
+    (mstatus >> 17) & 0x1 == 0x01 : 0  							# When MPRV=1, load and store memory addresses are translated and protected, and endianness is applied
+
 	
+mstatus_MtoM:											# M-mode to M-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*);
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x3 : 0
+
+
+mstatus_StoM:											# S-mode to M-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*);
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x3 and (mstatus >> 11) & 0x1 == 0x0 : 0
+
+
+mstatus_UtoM:											# U-mode to M-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*);
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x3 and (mstatus >> 11) & 0x1 == 0x1 : 0
+
+
+mstatus_MtoS:											# M-mode to S-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*);
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x1 : 0
+
+
+mstatus_StoS:											# S-mode to S-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*);
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x1 and (mstatus >> 11) & 0x1 == 0x0 : 0
+
+
+mstatus_UtoS:											# U-mode to S-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*S.*); check is_trap = True;
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x1 and (mstatus >> 11) & 0x1 == 0x1 : 0
+
+
+mstatus_MtoU:											# M-mode to U-mode transition
+  config:
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*); check is_trap = True;
+  mnemonics:
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+    is_trap = True and (mstatus >> 10) & 0x3 == 0x0 : 0
+
 	
 mstatush:    
   config: 
@@ -250,7 +312,85 @@ mstatus_checking_SD:
   config: 
     - check ISA:=regex(.*I.*Zicsr.*F.*V.*); 
   csr_comb: 
-    	mstatus >> (xlen-1) == 1 : 0 								# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
-    	mstatus >> (xlen-1) == 0 : 0 								# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
+  	mstatus >> (xlen-1) == 1 && ((mstatus >> fs_shift) & fs_mask == fs_val) || ((mstatus >> vs_shift) & vs_mask == vs_val) : 0 	# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
+    	mstatus >> (xlen-1) == 0 && ((mstatus >> fs_shift) & fs_mask == fs_val) || ((mstatus >> vs_shift) & vs_mask == vs_val) : 0 	# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state
+
     	
+#######################################################################################################################################################################################################
+
+mcycle:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*); 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	mcycle == 0x0 : 0					# where the value in mcycle register is 0
+	mcycle > 1000 : 0 					# More than 1000 cycles were executed
+	mcycle > 10000 : 0					# More than 10000 cycles were executed
+	mcycle > 100000 : 0					# More than 100000 cycles were executed	
+
+#######################################################################################################################################################################################################
+
+mcounteren:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*); 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	mcounteren & 0x07 == 0x07 : 0				# checks that the three least significant bits are all 1
+	mcounteren & 0x07 == 0x00 : 0				# checks that the three least significant bits are either all 0
+    	mcounteren & 0x07 == 0x05 : 0				# for the next 3, checking that the three least significant bits are alternating 1s and 0s (e.g. 101, 010, or 011)
+
+#######################################################################################################################################################################################################
+
+mcountinhibit:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*);
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	mcountinhibit == 1 : 0					# checks that the value of the register is either 1
+	mcountinhibit == 1 : 0					# checks that the value of the register is either 0
+	mcountinhibit != 0 : 0					# checks that the value of the register is any value other than 0
+
+#######################################################################################################################################################################################################
+	
+mepc:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*); 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mepc >> 3) & 0x07 == 0x00 : 0 			# Exception or interrupt occurred at machine level (M-mode)
+	(mepc & 0x3) == 0x00 : 0 				# Instruction was aligned on a 4-byte boundary
+	(mepc & 0x3) == 0x01 : 0 				# Instruction was aligned on a 2-byte boundary
+	(mepc & 0x3) == 0x02 : 0 				# Instruction was aligned on a 1-byte boundary
+	(mepc & 0x3) == 0x03 : 0 				# Instruction was unaligned
+
+
+mepc_Smode:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*S.*); 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mepc >> 3) & 0x07 == 0x01 : 0 			# Exception or interrupt occurred at supervisor level (S-mode)
+	
+mepc_Umode:    
+  config: 
+    - check ISA:=regex(.*32.*); regex(.*I.*Zicsr.*U.*); 
+  mnemonics: 
+    csrrw: 0
+    csrrs: 0
+  csr_comb:
+	(mepc >> 3) & 0x07 == 0x02 : 0 			# Exception or interrupt occurred at user level (U-mode)
+
+#######################################################################################################################################################################################################
+
+
 
