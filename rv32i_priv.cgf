@@ -11,7 +11,7 @@ misa:
     csrrw: 0
     csrrs: 0
   csr_comb:
-((write_val(misa) & 0x20) == 0) && ((old_val(misa) & 0x28) == 0x28) && ((misa & 0x28) == 0) # checking if the misa register has the correct ISA extensions enabled by checking if bits 5 and 3 are set, and if bits 5 and 3 were previously set before the write to the misa register.
+	((write_val(misa) & 0x20) == 0) && ((old_val(misa) & 0x28) == 0x28) && ((misa & 0x28) == 0) # checking if the misa register has the correct ISA extensions enabled by checking if bits 5 and 3 are set, and if bits 5 and 3 were previously set before the write to the misa register.
 
 
 misa_mxl_check_32:
@@ -21,7 +21,7 @@ misa_mxl_check_32:
     csrrw: 0
     csrrs: 0
   csr_comb:
-misa >> (xlen-2) == 0x01 : 0                                                                # checks whether the mxl field of misa register is 1.
+	misa >> (xlen-2) == 0x01 : 0                                                                # checks whether the mxl field of misa register is 1.
     
     
 misa_mxl_check_64:
@@ -31,7 +31,7 @@ misa_mxl_check_64:
     csrrw: 0
     csrrs: 0
   csr_comb:
-misa >> (xlen-2) == 0x02 : 0								                                # checks whether the mxl field of misa register is 2.
+	misa >> (xlen-2) == 0x02 : 0								                                # checks whether the mxl field of misa register is 2.
     
     
 misa_mxl_check_128:
@@ -41,7 +41,7 @@ misa_mxl_check_128:
     csrrw: 0
     csrrs: 0
   csr_comb:
-misa >> (xlen-2) == 0x03 : 0                                                                # checks whether the mxl field of misa register is 3.
+	misa >> (xlen-2) == 0x03 : 0                                                                # checks whether the mxl field of misa register is 3.
 
 
 misa_Umode:
@@ -51,7 +51,7 @@ misa_Umode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(misa >> 20) & 0x01 == 0x01 : 0 							                                # checking if U bit gets set if there is support for user mode RV32
+	(misa >> 20) & 0x01 == 0x01 : 0 							                                # checking if U bit gets set if there is support for user mode RV32
 
 
 misa_Smode:
@@ -61,7 +61,7 @@ misa_Smode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(misa >> 18) & 0x01 == 0x01 : 0 							                                # checking if S bit gets set if there is support for supervisor mode RV32
+	(misa >> 18) & 0x01 == 0x01 : 0 							                                # checking if S bit gets set if there is support for supervisor mode RV32
 
 ######## mcause #####################################################################################################################################################################################################
 
@@ -72,19 +72,19 @@ mcause:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mcause >> 31) & 1 == 1 : 0                                             # checks if the exception or interrupt was an interrupt 
-is_trap == True & (mcause >> 31) & 1 == 0 : 0							                    # checks if the exception or interrupt was an exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h01 : 0				    # Instruction access fault exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h02 : 0				    # Illegal instruction exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h03 : 0				    # Breakpoint exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h04 : 0				    # Load address misaligned exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h05 : 0				    # Load access fault exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h06 : 0				    # Store/AMO address misaligned exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h07 : 0				    # Store/AMO access fault exception
-is_trap == True & (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0b : 0				    # Environment call from M-mode exception
-is_trap == True & (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h03 : 0				    # Machine software interrupt
-is_trap == True & (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h07 : 0				    # Machine timer interrupt
-is_trap == True & (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h0b : 0				    # Machine external interrupt 
+	is_trap == True and (mcause >> 31) & 1 == 1 : 0                                             # checks if the exception or interrupt was an interrupt 
+	is_trap == True and (mcause >> 31) & 1 == 0 : 0							                    # checks if the exception or interrupt was an exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h01 : 0				    # Instruction access fault exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h02 : 0				    # Illegal instruction exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h03 : 0				    # Breakpoint exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h04 : 0				    # Load address misaligned exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h05 : 0				    # Load access fault exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h06 : 0				    # Store/AMO address misaligned exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h07 : 0				    # Store/AMO access fault exception
+	is_trap == True and (mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h0b : 0				    # Environment call from M-mode exception
+	is_trap == True and (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h03 : 0				    # Machine software interrupt
+	is_trap == True and (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h07 : 0				    # Machine timer interrupt
+	is_trap == True and (mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h0b : 0				    # Machine external interrupt 
 
 
 mcause_PageFault:
@@ -93,9 +93,9 @@ mcause_PageFault:
   mnemonics:
     csrrs: 0
   csr_comb:
-(mcause & 0xff) == 0x0c && mcause[31] == 0 && is_trap == False : 0                          # checks for page fault caused by a data access
-(mcause & 0xff) == 0x0d && mcause[31] == 0 && is_trap == False : 0                          # checks for page table fault caused by a data access
-(mcause & 0xff) == 0x0f && mcause[31] == 0 && is_trap == False : 0                          # checks for page access fault caused by a data access
+	(mcause & 0xff) == 0x0c && mcause[31] == 0 && is_trap == True : 0                          # checks for page fault caused by a data access
+	(mcause & 0xff) == 0x0d && mcause[31] == 0 && is_trap == True : 0                          # checks for page table fault caused by a data access
+	(mcause & 0xff) == 0x0f && mcause[31] == 0 && is_trap == True : 0                          # checks for page access fault caused by a data access
 
 
 mcause_InstAddr_MissAligned:      # This coverpoint checks for the instruction address misaligned exception and verifies that it does not occur when the C extension is present and enabled.
@@ -105,7 +105,7 @@ mcause_InstAddr_MissAligned:      # This coverpoint checks for the instruction a
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mcause >> 31) & 1 == 0 & (mcause & 0x7f) == 0b0000011: 0 	        # Verify that the instruction address misaligned exception does not occur when the C extension is present and enabled. Note that we are checking the 7 least significant bits of the mcause register to capture all possible exception codes for instruction address misaligned exceptions.
+	is_trap == True & (mcause >> 31) & 1 == 0 & (mcause & 0x7f) == 0b0000011: 0 	        # Verify that the instruction address misaligned exception does not occur when the C extension is present and enabled. Note that we are checking the 7 least significant bits of the mcause register to capture all possible exception codes for instruction address misaligned exceptions.
     	
 
 mcause_Smode:    
@@ -115,10 +115,10 @@ mcause_Smode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h01 : 0				                        # Supervisor software interrupt
-(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h05 : 0				                        # Supervisor timer interrupt
-(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h09 : 0				                        # Supervisor external interrupt
-(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h09 : 0				                        # Environment call from S-mode exception
+	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h01 : 0				                        # Supervisor software interrupt
+	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h05 : 0				                        # Supervisor timer interrupt
+	(mcause >> 31) & 1 == 1 && (mcause & 0xff) == 8'h09 : 0				                        # Supervisor external interrupt
+	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h09 : 0				                        # Environment call from S-mode exception
 
 
 mcause_Umode:    
@@ -128,7 +128,7 @@ mcause_Umode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h08 : 0				                        # Environment call from U-mode exception
+	(mcause >> 31) & 1 == 0 && (mcause & 0xff) == 8'h08 : 0				                        # Environment call from U-mode exception
 		
 ######## mstatus #####################################################################################################################################################################################################
 
@@ -139,9 +139,9 @@ mstatus:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatus >> 3) & 0x01 == 0x01 : 0 							                                # checking if the MIE gets enabled
-(mstatus >> 7) & 0x01 == 0x01 : 0 							                                # MPIE holds the value of the interrupt-enable bit active prior to the trap, checking whether it does that or not
-(mstatus >> 21) & 0x1 == 0x00 : 0							                                # TW is set to 0 when there are no privilege levels below M.
+	(mstatus >> 3) & 0x01 == 0x01 : 0 							                                # checking if the MIE gets enabled
+	(mstatus >> 7) & 0x01 == 0x01 : 0 							                                # MPIE holds the value of the interrupt-enable bit active prior to the trap, checking whether it does that or not
+	(mstatus >> 21) & 0x1 == 0x00 : 0							                                # TW is set to 0 when there are no privilege levels below M.
 
 
 mstatus_Smode:    
@@ -151,17 +151,17 @@ mstatus_Smode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatus >> 1) & 0x01 == 0x01 : 0							                                # Check that the SIE bit is set to 1 when the processor is in supervisor mode
-(mstatus >> 5) & 0x01 == 0x01 : 0 							                                # Check that the SPIE bit is set to 1 when interrupts are enabled in supervisor mode and that it is set to 0 when interrupts are disabled in supervisor mode 
-(mstatus >> 8) & 0x01 == 0x01 : 0 							                                # checks SPP bit
-(mstatus >> 22) & 0x1 == 0x01 : 0 							                                # When TSR=1, attempts to execute SRET while executing in S-mode will raise an illegal instruction exception.  
-(mstatus >> 20) & 0x1 == 0x01 : 0 							                                # TVM=1, illegal instruction exception in S-mode
-(mstatus >> 20) & 0x1 == 0x00 : 0 							                                # TVM=0, permitted in S-mode
-(mstatus >> 21) & 0x1 == 0x01 : 0 							                                # When TW=1 and WFI is executed in a lower-privileged mode, it causes an illegal instruction exception if not completed within a bounded time limit, which may be 0
-(mstatus >> 19) & 0x1 == 0x01 : 0 							                                # When MXR is set to 1, memory pages that are either marked as readable (R=1) or executable (X=1) can be loaded successfully.
-(mstatus >> 19) & 0x1 == 0x00 : 0							                                # When MXR is set to 0, only loading data from pages that are marked as readable (with R=1) will be successful.
-(mstatus >> 18) & 0x1 == 0x00 : 0							                                # SUM=0, S-mode memory accesses to pages accessible by U-mode will fault
-(mstatus >> 18) & 0x1 == 0x01 : 0							                                # SUM=1, these accesses to pages accessible by U-mode are permitted
+	(mstatus >> 1) & 0x01 == 0x01 : 0							                                # Check that the SIE bit is set to 1 when the processor is in supervisor mode
+	(mstatus >> 5) & 0x01 == 0x01 : 0 							                                # Check that the SPIE bit is set to 1 when interrupts are enabled in supervisor mode and that it is set to 0 when interrupts are disabled in supervisor mode 
+	(mstatus >> 8) & 0x01 == 0x01 : 0 							                                # checks SPP bit
+	(mstatus >> 22) & 0x1 == 0x01 : 0 							                                # When TSR=1, attempts to execute SRET while executing in S-mode will raise an illegal instruction exception.  
+	(mstatus >> 20) & 0x1 == 0x01 : 0 							                                # TVM=1, illegal instruction exception in S-mode
+	(mstatus >> 20) & 0x1 == 0x00 : 0 							                                # TVM=0, permitted in S-mode
+	(mstatus >> 21) & 0x1 == 0x01 : 0 							                                # When TW=1 and WFI is executed in a lower-privileged mode, it causes an illegal instruction exception if not completed within a bounded time limit, which may be 0
+	(mstatus >> 19) & 0x1 == 0x01 : 0 							                                # When MXR is set to 1, memory pages that are either marked as readable (R=1) or executable (X=1) can be loaded successfully.
+	(mstatus >> 19) & 0x1 == 0x00 : 0							                                # When MXR is set to 0, only loading data from pages that are marked as readable (with R=1) will be successful.
+	(mstatus >> 18) & 0x1 == 0x00 : 0							                                # SUM=0, S-mode memory accesses to pages accessible by U-mode will fault
+	(mstatus >> 18) & 0x1 == 0x01 : 0							                                # SUM=1, these accesses to pages accessible by U-mode are permitted
 
 
 mstatus_MPRV:
@@ -171,7 +171,7 @@ mstatus_MPRV:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatus >> 17) & 0x1 == 1 & (mstatus.MPP != 3) : 0
+	(mstatus >> 17) & 0x1 == 1 & (mstatus.MPP != 3) : 0
 
 
 mstatus_MtoM:
@@ -181,7 +181,7 @@ mstatus_MtoM:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mstatus >> 11) & 0x3 == 0x3 : 0 	                                        # M-mode to M-mode transition
+	is_trap == True & (mstatus >> 11) & 0x3 == 0x3 : 0 	                                        # M-mode to M-mode transition
 
 
 mstatus_StoM:
@@ -192,7 +192,7 @@ mstatus_StoM:
     csrrs: 0
   csr_comb:
     csrrw: 0
-is_trap == True & ((mstatus >> 11) & 0x1) == 0x0 & ((mstatus >> 10) & 0x3) == 0x3 : 0        # S-mode to M-mode transition
+	is_trap == True & ((mstatus >> 11) & 0x1) == 0x0 & ((mstatus >> 10) & 0x3) == 0x3 : 0        # S-mode to M-mode transition
 
 
 mstatus_UtoM:
@@ -202,7 +202,7 @@ mstatus_UtoM:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & ((mstatus >> 11) & 0x1) == 0x1 & ((mstatus >> 10) & 0x3) == 0x3 & ((mstatus >> 2) & 0x3) == 0x0 : 0  # U-mode to M-mode transition
+	is_trap == True & ((mstatus >> 11) & 0x1) == 0x1 & ((mstatus >> 10) & 0x3) == 0x3 & ((mstatus >> 2) & 0x3) == 0x0 : 0  # U-mode to M-mode transition
 
 
 mstatus_MtoS:
@@ -212,7 +212,7 @@ mstatus_MtoS:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mstatus >> 10) & 0x3 == 0x1 : 0                                           # M-mode to S-mode transition
+	is_trap == True & (mstatus >> 10) & 0x3 == 0x1 : 0                                           # M-mode to S-mode transition
 
 
 mstatus_StoS:
@@ -222,7 +222,7 @@ mstatus_StoS:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mstatus >> 10) & 0x3 == 0x1 & (mstatus >> 11) & 0x1 == 0x0 & (mstatus >> 8) & 0x1 == 0x0 : 0 	# S-mode to S-mode transition
+	is_trap == True & (mstatus >> 10) & 0x3 == 0x1 & (mstatus >> 11) & 0x1 == 0x0 & (mstatus >> 8) & 0x1 == 0x0 : 0 	# S-mode to S-mode transition
 
 
 mstatus_UtoS:
@@ -232,7 +232,7 @@ mstatus_UtoS:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mstatus >> 10) & 0x3 == 0x1 & (mstatus >> 11) & 0x1 == 0x1 : 0 	        # U-mode to S-mode transition
+	is_trap == True & (mstatus >> 10) & 0x3 == 0x1 & (mstatus >> 11) & 0x1 == 0x1 : 0 	        # U-mode to S-mode transition
 
 
 mstatus_MtoU:
@@ -242,7 +242,7 @@ mstatus_MtoU:
     csrrw: 0
     csrrs: 0
   csr_comb:
-is_trap == True & (mstatus >> 10) & 0x3 == 0x0 : 0                                           # M-mode to U-mode transition
+	is_trap == True & (mstatus >> 10) & 0x3 == 0x0 : 0                                           # M-mode to U-mode transition
 
 
 mstatush:    
@@ -252,7 +252,7 @@ mstatush:
     csrrw: 0
     csrrs: 0
 csr_comb:
-(mstatush >> 5) & 0x1 == 0x01 : 0                                                           # checks if machine-mode byte enable (MBE) is set to enabled. If this bit is set to 1, the coverpoint will evaluate to 0, indicating that MBE is enabled
+	(mstatush >> 5) & 0x1 == 0x01 : 0                                                           # checks if machine-mode byte enable (MBE) is set to enabled. If this bit is set to 1, the coverpoint will evaluate to 0, indicating that MBE is enabled
 
 
 mstatus_little-endian:    
@@ -262,7 +262,7 @@ mstatus_little-endian:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatush >> 5) & (mstatus >> 4) & (mstatus >> 6) == 0 : 0 				                    # checks if all three of these bits are set to 0, indicating that MBE, SBE, and UBE are all disabled. When these bits are all disabled, the processor is in little-endian mode, and accesses made to memory will be little-endian.
+	(mstatush >> 5) & (mstatus >> 4) & (mstatus >> 6) == 0 : 0 				                    # checks if all three of these bits are set to 0, indicating that MBE, SBE, and UBE are all disabled. When these bits are all disabled, the processor is in little-endian mode, and accesses made to memory will be little-endian.
 
 
 mstatus_big_endian:    
@@ -272,7 +272,7 @@ mstatus_big_endian:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatus >> 37) & 0x1 == 0x01 : 0 							                                # checks the sixth least significant bit of the upper 32 bits of the mstatus register to ensure that machine-mode byte enable (MBE) is set to enabled. If this bit is set to 1, the coverpoint will evaluate to 0, indicating that MBE is enabled 
+	(mstatus >> 37) & 0x1 == 0x01 : 0 							                                # checks the sixth least significant bit of the upper 32 bits of the mstatus register to ensure that machine-mode byte enable (MBE) is set to enabled. If this bit is set to 1, the coverpoint will evaluate to 0, indicating that MBE is enabled 
 
 
 mstatus_big_endian_Smode:    
@@ -282,7 +282,7 @@ mstatus_big_endian_Smode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatush >> 4) & 0x1 == 0x01 : 0 	                                                        # ensures that certain instructions or operations are only executed when the processor is in supervisor mode and in big-endian mode						   
+	(mstatush >> 4) & 0x1 == 0x01 : 0 	                                                        # ensures that certain instructions or operations are only executed when the processor is in supervisor mode and in big-endian mode						   
 
 
 mstatus_big_endian__Umode:    
@@ -292,15 +292,15 @@ mstatus_big_endian__Umode:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mstatus >> 6) & 0x1 == 0x01 : 0 							                                # check UBE = 1, it controls whether explicit load and store memory accesses made from U-mode is big-endian
+	(mstatus >> 6) & 0x1 == 0x01 : 0 							                                # check UBE = 1, it controls whether explicit load and store memory accesses made from U-mode is big-endian
 
 
 mstatus_checking_SD:    
   config: 
     - check ISA:=regex(.*I.*Zicsr.*F.*V.*); 
   csr_comb: 
-mstatus >> (xlen-1) == 1 && ((mstatus >> fs_shift) & fs_mask == fs_val) || ((mstatus >> vs_shift) & vs_mask == vs_val) : 0 	# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
-mstatus >> (xlen-1) == 0 && ((mstatus >> fs_shift) & fs_mask == fs_val) || ((mstatus >> vs_shift) & vs_mask == vs_val) : 0 	# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state
+	mstatus >> (xlen-1) == 1 && ((mstatus >> fs_shift) & fs_mask == fs_val) || ((mstatus >> vs_shift) & vs_mask == vs_val) : 0 	# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state 
+	mstatus >> (xlen-1) == 0 && ((mstatus >> fs_shift) & fs_mask == fs_val) || ((mstatus >> vs_shift) & vs_mask == vs_val) : 0 	# The SD bit is read-only and is set when either the FS, VS bits encode a Dirty state
 		
 ######## mcycle #####################################################################################################################################################################################################
 
@@ -311,10 +311,10 @@ mcycle:
     csrrw: 0
     csrrs: 0
   csr_comb:
-mcycle == 0x0 : 0					                                                        # where the value in mcycle register is 0
-mcycle > 1000 : 0 					                                                        # More than 1000 cycles were executed
-mcycle > 10000 : 0					                                                        # More than 10000 cycles were executed
-mcycle > 100000 : 0					                                                        # More than 100000 cycles were executed	
+	mcycle == 0x0 : 0					                                                        # where the value in mcycle register is 0
+	mcycle > 1000 : 0 					                                                        # More than 1000 cycles were executed
+	mcycle > 10000 : 0					                                                        # More than 10000 cycles were executed
+	mcycle > 100000 : 0					                                                        # More than 100000 cycles were executed	
 		
 ######## mcounteren #####################################################################################################################################################################################################
 
@@ -325,10 +325,10 @@ mcounteren:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mcounteren >> 0) & 0x1: 0                                                                  # Check that the CY bit is set, allowing access to the cycle register
-(mcounteren >> 1) & 0x1: 0                                                                  # Check that the TM bit is set, allowing access to the time register
-(mcounteren >> 2) & 0x1: 0                                                                  # Check that the IR bit is set, allowing access to the instret register
-(mcounteren >> 3) & 0xFFFFFFF8 == 0: 0                                                      # Check that all other bits are cleared, indicating that no other counters are accessible
+	(mcounteren >> 0) & 0x1: 0                                                                  # Check that the CY bit is set, allowing access to the cycle register
+	(mcounteren >> 1) & 0x1: 0                                                                  # Check that the TM bit is set, allowing access to the time register
+	(mcounteren >> 2) & 0x1: 0                                                                  # Check that the IR bit is set, allowing access to the instret register
+	(mcounteren >> 3) & 0xFFFFFFF8 == 0: 0                                                      # Check that all other bits are cleared, indicating that no other counters are accessible
 		
 ######## mcountinhibit #####################################################################################################################################################################################################
 
@@ -339,9 +339,9 @@ mcountinhibit:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mcountinhibit >> 0) & 0x1: 0                                                               # Check that the CY bit is set, allowing the cycle counter to increment
-(mcountinhibit >> 2) & 0x1: 0                                                               # Check that the IR bit is set, allowing the instret counter to increment
-(mcountinhibit >> 3) & 0xFFFFFFF8 == 0: 0                                                   # Check that all other bits are cleared, indicating that no other counters are inhibited
+	(mcountinhibit >> 0) & 0x1: 0                                                               # Check that the CY bit is set, allowing the cycle counter to increment
+	(mcountinhibit >> 2) & 0x1: 0                                                               # Check that the IR bit is set, allowing the instret counter to increment
+	(mcountinhibit >> 3) & 0xFFFFFFF8 == 0: 0                                                   # Check that all other bits are cleared, indicating that no other counters are inhibited
 		
 ######## mvendorid #####################################################################################################################################################################################################
 
@@ -352,7 +352,7 @@ mvendorid:
     csrrw: 0
     csrrs: 0
   csr_comb:
-mvendorid != 0: 0 						                                                    # Check that the value returned is not zero, indicating that the field is implemented or that this is a commercial implementation.
+	write_val(mvendorid) = mvendorid: 0 						                                                    # Check that the value returned is not zero, indicating that the field is implemented or that this is a commercial implementation.
 		
 ######## marchid #####################################################################################################################################################################################################
 
@@ -363,7 +363,7 @@ marchid:
     csrrw: 0
     csrrs: 0
   csr_comb:
-marchid != 0: 0						                                                        # Ensure that marchid is not equal to zero as a value of 0 indicates that the field is not implemented.
+	write_val(marchid) = marchid: 0: 0						                                                        # Ensure that marchid is not equal to zero as a value of 0 indicates that the field is not implemented.
 		
 ######## mimpid #####################################################################################################################################################################################################
 
@@ -374,7 +374,7 @@ mimpid:
     csrrw: 0
     csrrs: 0
   csr_comb:
-mimpid != 0: 0                                                                              # Check that the value returned is not zero, indicating that the field is implemented
+	write_val(mimpid) = mimpid: 0                                                                              # Check that the value returned is not zero, indicating that the field is implemented
 		
 ######## mhartid #####################################################################################################################################################################################################
 
@@ -385,8 +385,7 @@ mhartid:
     csrrw: 0
     csrrs: 0
   csr_comb:
-mhartid == 0: 0                                                                             # Check that at least one hart has a known hart ID of zero
-mhartid >= 0: 0                                                                             # Check that the value of the register is non-negative
+	write_val(mhartid) = mhartid: 0                                                                             # Check that at least one hart has a known hart ID of zero
 		
 ######## mscratch #####################################################################################################################################################################################################
 
@@ -397,7 +396,7 @@ mscratch_valid_address:
     csrrw: 0
     csrrs: 0
   csr_comb:
-0 : 0                                                                                       # no check needed since this coverpoint only checks if mscratch is a valid address
+	0 : 0                                                                                       # no check needed since this coverpoint only checks if mscratch is a valid address
 		
 ######## mepc #####################################################################################################################################################################################################
 
@@ -408,7 +407,7 @@ mepc_alignment:
     csrrw: 0
     csrrs: 0
   csr_comb:
-0 : 0                                                                                       # no check needed since this coverpoint only checks mepc alignment
+	0 : 0                                                                                       # no check needed since this coverpoint only checks mepc alignment
 
 
 mepc_write_masked:
@@ -418,7 +417,7 @@ mepc_write_masked:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mepc & 0xFFFFFFFE) == mepc : 0                                                             # check that mepc[1] is masked when IALIGN=32
+	(mepc & 0xFFFFFFFE) == mepc : 0                                                             # check that mepc[1] is masked when IALIGN=32
 		
 ######## mconfigptr #####################################################################################################################################################################################################
 
@@ -429,7 +428,7 @@ mconfigptr_base_alignment:
     csrrw: 0
     csrrs: 0
   csr_comb:
-0 : 0                                                                                       # no check needed since this coverpoint only checks mconfigptr base alignment
+	0 : 0                                                                                       # no check needed since this coverpoint only checks mconfigptr base alignment
 
 
 mconfigptr_not_zero:
@@ -439,7 +438,7 @@ mconfigptr_not_zero:
     csrrw: 0
     csrrs: 0
   csr_comb:
-mconfigptr != 0 : 0                                                                         # check that mconfigptr is not zero                                                                       # check that mconfigptr is not zero
+	mconfigptr != 0 : 0                                                                         # check that mconfigptr is not zero                                                                       # check that mconfigptr is not zero
 		
 ######## menvcfg & menvcfgh #####################################################################################################################################################################################################
 
@@ -450,7 +449,7 @@ menvcfg_FIOM:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(menvcfg & (1 << 0)) == 0 or (menvcfg & (1 << 0)) == (1 << 0) : 0                           # Check if the FIOM bit is either 0 or 1 using a bitwise AND operation with (1 << 0). If the result is 0 or (1 << 0), the coverpoint is satisfied.
+	(menvcfg & (1 << 0)) == 0 or (menvcfg & (1 << 0)) == (1 << 0) : 0                           # Check if the FIOM bit is either 0 or 1 using a bitwise AND operation with (1 << 0). If the result is 0 or (1 << 0), the coverpoint is satisfied.
 
 
 menvcfg_PBMTE:
@@ -460,7 +459,7 @@ menvcfg_PBMTE:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(menvcfg & (1 << 61)) == 0 or (menvcfg & (1 << 61)) == (1 << 61) : 0                        # Check if the PBMTE bit is either 0 or 1 using a bitwise AND operation with (1 << 61). If the result is 0 or (1 << 61), the coverpoint is satisfied.
+	(menvcfg & (1 << 61)) == 0 or (menvcfg & (1 << 61)) == (1 << 61) : 0                        # Check if the PBMTE bit is either 0 or 1 using a bitwise AND operation with (1 << 61). If the result is 0 or (1 << 61), the coverpoint is satisfied.
 
 
 menvcfgh_PBMTE:
@@ -470,7 +469,7 @@ menvcfgh_PBMTE:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(menvcfgh & (1 << 29)) == 0 || (menvcfgh & (1 << 29)) == (1 << 29) : 0                      # Check if the PBMTE bit is either 0 or 1 using a bitwise AND operation with (1 << 29). If the result is 0 or (1 << 29), the coverpoint is satisfied.
+	(menvcfgh & (1 << 29)) == 0 || (menvcfgh & (1 << 29)) == (1 << 29) : 0                      # Check if the PBMTE bit is either 0 or 1 using a bitwise AND operation with (1 << 29). If the result is 0 or (1 << 29), the coverpoint is satisfied.
 
 
 menvcfg_WPRI_3_1:
@@ -480,7 +479,7 @@ menvcfg_WPRI_3_1:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(menvcfg & (0x0E << 1)) == 0 : 0                                                            # This checks that bits 3 to 1 in menvcfg are all zero, as these bits are labeled as WPRI in the specification. 
+	(menvcfg & (0x0E << 1)) == 0 : 0                                                            # This checks that bits 3 to 1 in menvcfg are all zero, as these bits are labeled as WPRI in the specification. 
 		
 ######## mtime & mtimecmp #####################################################################################################################################################################################################
 
@@ -491,7 +490,7 @@ mtime:
     csrrs: 0
     csrrw: 0
   csr_comb:
-mtime < mtimecmp : 0                                                                        # Verify that mtime is always less than mtimecmp
+	mtime < mtimecmp : 0                                                                        # Verify that mtime is always less than mtimecmp
 
 
 mtimecmp:
@@ -501,8 +500,8 @@ mtimecmp:
     csrrs: 0
     csrrw: 0
   csr_comb:
-(mtimecmp >> 32) == 0 : 0                                                                   # Verify that writes to mtimecmp only modify the lower 32 bits
-(mtimecmp - mtime) > 0 : 0                                                                  # Verify that mtimecmp is always greater than mtime after a write
+	(mtimecmp >> 32) == 0 : 0                                                                   # Verify that writes to mtimecmp only modify the lower 32 bits
+	(mtimecmp - mtime) > 0 : 0                                                                  # Verify that mtimecmp is always greater than mtime after a write
 
 
 mtimecmp_timer_interrupt:
@@ -512,7 +511,7 @@ mtimecmp_timer_interrupt:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mtime >= mtimecmp) & (mstatus.MIE == 1) & (mie.MTIE == 1): 0                           # Check that the machine timer interrupt is only taken when mtime contains a value greater than or equal to mtimecmp, and that interrupts are enabled and the MTIE bit is set in the mie register.
+	(mtime >= mtimecmp) & (mstatus.MIE == 1) & (mie.MTIE == 1): 0                           # Check that the machine timer interrupt is only taken when mtime contains a value greater than or equal to mtimecmp, and that interrupts are enabled and the MTIE bit is set in the mie register.
 
 
 mtimecmp_write:
@@ -522,7 +521,7 @@ mtimecmp_write:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mtime >= mtimecmp) & (mstatus.MIE == 1) & (mie.MTIE == 1): 0                            # Check that writes to mtime and mtimecmp are guaranteed to be reflected in MTIP eventually, but not necessarily immediately.
+	(mtime >= mtimecmp) & (mstatus.MIE == 1) & (mie.MTIE == 1): 0                            # Check that writes to mtime and mtimecmp are guaranteed to be reflected in MTIP eventually, but not necessarily immediately.
 
 
 mtime:
@@ -533,7 +532,7 @@ mtime:
     csrrw: 0
     csrrs: 0
   csr_comb:
-(mtime >= 0) & (mtime < 2**64): 0                                                          # Check that mtime is a memory-mapped read-write register with the correct bit width.
+	(mtime >= 0) & (mtime < 2**64): 0                                                          # Check that mtime is a memory-mapped read-write register with the correct bit width.
 		
 ######## pmpcfg #####################################################################################################################################################################################################
 
@@ -541,56 +540,56 @@ pmpcfg0:
   config: 
     - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check hw_data_misaligned_support:=True; def rvtest_mtrap_routine=True
   csr_comb:
-pmpcfg0 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg0
-pmpcfg0 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg0
-(pmpcfg0 >> 8) & 0x80 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg0
-(pmpcfg0 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg0
-(pmpcfg0 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg0
-(pmpcfg0 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg0
-(pmpcfg0 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg0
-(pmpcfg0 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg0
+	pmpcfg0 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg0
+	pmpcfg0 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg0
+	(pmpcfg0 >> 8) & 0x80 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg0
+	(pmpcfg0 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg0
+	(pmpcfg0 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg0
+	(pmpcfg0 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg0
+	(pmpcfg0 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg0
+	(pmpcfg0 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg0
     
 
  pmpcfg1:
   config: 
     - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check hw_data_misaligned_support:=True; def rvtest_mtrap_routine=True
   csr_comb:   
-pmpcfg1 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg1
-pmpcfg1 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg1
-(pmpcfg1 >> 8) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg1
-(pmpcfg1 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg1
-(pmpcfg1 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg1
-(pmpcfg1 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg1
-(pmpcfg1 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg1
-(pmpcfg1 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg1
+	pmpcfg1 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg1
+	pmpcfg1 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg1
+	(pmpcfg1 >> 8) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg1
+	(pmpcfg1 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg1
+	(pmpcfg1 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg1
+	(pmpcfg1 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg1
+	(pmpcfg1 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg1
+	(pmpcfg1 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg1
 
 
 pmpcfg2:
   config: 
     - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check hw_data_misaligned_support:=True; def rvtest_mtrap_routine=True
   csr_comb:
-pmpcfg2 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg2
-pmpcfg2 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg2
-(pmpcfg2 >> 8) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg2
-(pmpcfg2 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg2
-(pmpcfg2 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg2
-(pmpcfg2 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg2
-(pmpcfg2 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg2
-(pmpcfg2 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg2
+	pmpcfg2 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg2
+	pmpcfg2 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg2
+	(pmpcfg2 >> 8) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg2
+	(pmpcfg2 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg2
+	(pmpcfg2 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg2
+	(pmpcfg2 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg2
+	(pmpcfg2 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg2
+	(pmpcfg2 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg2
 
 
 pmpcfg3:
   config: 
     - check ISA:=regex(.*32.*); check ISA:=regex(.*I.*Zicsr.*); check hw_data_misaligned_support:=True; def rvtest_mtrap_routine=True
   csr_comb:
-pmpcfg3 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg3
-pmpcfg3 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg3
-(pmpcfg3 >> 8) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg3
-(pmpcfg3 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg3
-(pmpcfg3 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg3
-(pmpcfg3 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg3
-(pmpcfg3 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg3
-(pmpcfg3 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg3
+	pmpcfg3 & 0x60 == 0 : 0			                                                            # Check if [6:5] WARL field is hardwired to zero always, for pmp0cfg3
+	pmpcfg3 & 0x80 == 0x80 : 0			                                                        # Check if lock bit is high for pmp0cfg3
+	(pmpcfg3 >> 8) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp1cfg3
+	(pmpcfg3 >> 8) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp1cfg3
+	(pmpcfg3 >> 16) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp2cfg3
+	(pmpcfg3 >> 16) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp2cfg3
+	(pmpcfg3 >> 24) & 0x60 == 0 : 0		                                                        # Check if [6:5] WARL field is hardwired to zero always, for pmp3cfg3
+	(pmpcfg3 >> 24) & 0x80 == 0x80 : 0		                                                    # Check if lock bit is high for pmp3cfg3
 
 
 
